@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>The Recipe App - Ingredient List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css}">
+    <script src="https://code.jquery.com/jquery.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"
+            th:src="@{/webjars/jquery/3.4.0/jquery.slim.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"
+            th:src="@{/webjars/popper.js/1.14.3/umd/popper.min.js}"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div class="container-fluid themed-container mt-1">
+    <div class="row justify-content-md-center">
+        <div class="col-md-6">
+            <div class="card mt-2">
+
+                <h5 class="card-header text-white bg-primary">
+                    Ingredients
+                </h5>
+                <div class="card-body">
+                    <div class="row justify-content-end pr-3">
+                        <a class="btn btn-primary mb-3" th:href="@{'/recipe/'+${recipe.id}+'/ingredient/new'}">New
+                            ingredient</a>
+                    </div>
+                    <table class="table table-hover table-striped">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:remove="all">
+                            <td>1</td>
+                            <td>Rice</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic">
+                                    <a class="btn btn-sm btn-outline-dark" href="#">View</a>
+                                    <a class="btn btn-sm btn-outline-dark" href="#">Update</a>
+                                    <a class="btn btn-sm btn-outline-dark" href="#">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:each="ingredient,itemStat : ${recipe.ingredients}">
+                            <td th:text="${itemStat.index + 1}">1</td>
+                            <td th:text="${ingredient.description}">Rice</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic">
+                                    <a class="btn btn-sm btn-outline-dark" href="#"
+                                       th:href="@{'/recipe/'+${ingredient.recipeId}+'/ingredient/'+${ingredient.id}+'/show'}">View</a>
+                                    <a class="btn btn-sm btn-outline-dark" href="#"
+                                       th:href="@{'/recipe/'+${ingredient.recipeId}+'/ingredient/'+${ingredient.id}+'/update'}">Update</a>
+                                    <a class="btn btn-sm btn-outline-dark" href="#"
+                                       th:href="@{'/recipe/'+${ingredient.recipeId}+'/ingredient/'+${ingredient.id}+'/delete'}">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

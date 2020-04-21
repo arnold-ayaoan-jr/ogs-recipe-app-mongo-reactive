@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>The Recipe App - Recipe Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css}">
+    <script src="https://code.jquery.com/jquery.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"
+            th:src="@{/webjars/jquery/3.4.0/jquery.slim.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"
+            th:src="@{/webjars/popper.js/1.14.3/umd/popper.min.js}"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div class="container-fluid themed-container mt-1">
+    <div class="row justify-content-md-center">
+        <div class="col-md-6">
+            <form th:object="${recipe}" th:action="@{'/recipe/'}" th:method="post">
+                <input type="hidden" th:field="*{id}"/>
+                <div class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
+                    <span>Please correct errors below</span>
+                </div>
+
+                <div class="card">
+                    <h5 class="card-header text-white bg-primary" th:text="'Edit Recipe Information'">Recipe
+                        Information</h5>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label th:for="${#ids.next('description')}"
+                                       th:text="#{recipe.description}">Description</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{description}"
+                                       th:errorclass="is-invalid"/>
+                                <div class="invalid-feedback">
+                                    <ul>
+                                        <li th:each="error :${#fields.errors('description')}"
+                                            th:text="${error}">
+                                            Invalid field
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <label>Categories</label>
+                                <div class="form-check" th:each="cat : ${categoryList}">
+                                    <input class="form-check-input" type="checkbox"
+                                           th:field="*{categories}"
+                                           th:value="${cat.id}">
+                                    <label class="form-check-label"
+                                           th:for="${#ids.prev('categories')}"
+                                           th:text="${cat.description}">
+                                        Filipino
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label th:for="${#ids.next('prepTime')}"
+                                       th:text="#{recipe.prepTime}">Preparation time</label>
+                                <input type="text" class="form-control" th:field="*{prepTime}"
+                                       th:errorclass="'is-invalid'"/>
+                                <div class="invalid-feedback">
+                                    <ul>
+                                        <li th:each="error :${#fields.errors('prepTime')}"
+                                            th:text="${error}">
+                                            Invalid field
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label th:for="${#ids.next('cookTime')}"
+                                       th:text="#{recipe.cookTime}">Cook time</label>
+                                <input type="text" class="form-control" th:field="*{cookTime}"
+                                       th:errorclass="'is-invalid'"/>
+                                <div class="invalid-feedback">
+                                    <ul>
+                                        <li th:each="error :${#fields.errors('cookTime')}"
+                                            th:text="${error}">
+                                            Invalid field
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label th:for="${#ids.next('difficulty')}"
+                                       th:text="#{recipe.difficulty}">Difficulty</label>
+                                <select class="form-control" th:field="*{difficulty}"
+                                        th:errorclass="'is-invalid'">
+                                    <option th:each="diff:${T(com.outgrowthsolutions.ogsrecipeapp.domain.Difficulty).values()}"
+                                            th:value="${diff.name()}"
+                                            th:text="${diff.name()}">
+                                        EASY
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    <ul>
+                                        <li th:each="error :${#fields.errors('difficulty')}"
+                                            th:text="${error}">
+                                            Invalid field
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 mb-3">
+                                <label th:for="${#ids.next('yield')}"
+                                       th:text="#{recipe.yield}">Servings</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{yield}"
+                                       th:errorclass="'is-invalid'"/>
+                                <div class="invalid-feedback">
+                                    <ul>
+                                        <li th:each="error :${#fields.errors('yield')}"
+                                            th:text="${error}">
+                                            Invalid field
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label th:for="${#ids.next('source')}"
+                                       th:text="#{recipe.source}">Source</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{source}"
+                                       th:errorclass="'is-invalid'"/>
+                                <div class="invalid-feedback">
+                                    <ul>
+                                        <li th:each="error :${#fields.errors('source')}"
+                                            th:text="${error}">
+                                            Invalid field
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-7 mb-3">
+                                <label th:for="${#ids.next('url')}"
+                                       th:text="#{recipe.url}">URL</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{url}"
+                                       th:errorclass="'is-invalid'"/>
+                                <div class="invalid-feedback">
+                                    <ul>
+                                        <li th:each="error :${#fields.errors('url')}"
+                                            th:text="${error}">
+                                            Invalid field
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-2">
+                    <div class="card-header bg-primary">
+                        <div class="row">
+                            <h5 class="col-11 text-white">Ingredients</h5>
+                            <a class="btn btn-warning btn-sm"
+                               th:href="@{'/recipe/'+${recipe.id}+'/ingredients'}">View</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li th:remove="all">1 Cup of milk</li>
+                            <li th:remove="all">1 Teaspoon of chocolate</li>
+                            <li th:each="ingredient : ${recipe.ingredients}"
+                                th:text="${ingredient.amount} + ' ' + ${ingredient.unitOfMeasure.description} + ' - '
+                                        + ${ingredient.description}">
+                                1 Teaspoon of Sugar
+                            </li>
+                        </ul>
+                        <div th:each="ingredientEach, idx : ${recipe.ingredients}" >
+                            <input  type="hidden" th:field="*{ingredients[__${idx.index}__].id}" />
+                            <input  type="hidden" th:field="*{ingredients[__${idx.index}__].description}" />
+                            <input  type="hidden" th:field="*{ingredients[__${idx.index}__].amount}" />
+                            <input  type="hidden" th:field="*{ingredients[__${idx.index}__].unitOfMeasure.id}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-2">
+                    <h5 class="card-header text-white bg-primary" th:text="#{recipe.directions}">Directions</h5>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <textarea rows="5" class="form-control"
+                                          th:field="*{directions}"
+                                          th:errorclass="'is-invalid'"/>
+                                <div class="invalid-feedback">
+                                    <ul>
+                                        <li th:each="error :${#fields.errors('directions')}"
+                                            th:text="${error}">
+                                            Invalid field
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-2">
+                    <h5 class="card-header text-white bg-primary">Notes</h5>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <textarea rows="5" class="form-control"
+                                          th:field="*{note.recipeNotes}"
+                                          th:errorclass="'is-invalid'"/>
+                                <div class="invalid-feedback">
+                                    <ul>
+                                        <li th:each="error :${#fields.errors('note.recipeNotes')}"
+                                            th:text="${error}">
+                                            Invalid field
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-3" type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+package com.outgrowthsolutions.ogsrecipeapp.domain;
+
+public enum Difficulty {
+    EASY, MODERATE,HARD
+}
