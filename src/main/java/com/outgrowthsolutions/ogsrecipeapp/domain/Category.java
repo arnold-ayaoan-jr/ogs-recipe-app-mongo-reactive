@@ -13,6 +13,5 @@ import java.util.Set;
 public class Category {
     private String id;
     private String description;
-    @DBRef
     private Set<Recipe> recipes;
 }

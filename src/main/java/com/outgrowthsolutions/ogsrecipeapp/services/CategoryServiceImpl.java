@@ -2,33 +2,31 @@ package com.outgrowthsolutions.ogsrecipeapp.services;
 
 import com.outgrowthsolutions.ogsrecipeapp.commands.CategoryCommand;
 import com.outgrowthsolutions.ogsrecipeapp.converters.CategoryToCategoryCommand;
-import com.outgrowthsolutions.ogsrecipeapp.repositories.CategoryRepository;
+import com.outgrowthsolutions.ogsrecipeapp.repositories.reactive.CategoryReactiveRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
-    private final CategoryRepository categoryRepository;
+    private final CategoryReactiveRepository categoryRepository;
     private final CategoryToCategoryCommand categoryToCategoryCommand;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryToCategoryCommand categoryToCategoryCommand) {
+    public CategoryServiceImpl(CategoryReactiveRepository categoryRepository, CategoryToCategoryCommand categoryToCategoryCommand) {
         this.categoryRepository = categoryRepository;
         this.categoryToCategoryCommand = categoryToCategoryCommand;
     }
 
     @Override
-    public Set<CategoryCommand> getAllCategory() {
-        return StreamSupport.stream(categoryRepository.findAll().spliterator(), false)
-                .map(categoryToCategoryCommand::convert)
-                .collect(Collectors.toSet());
+    public Flux<CategoryCommand> getAllCategory() {
+        return categoryRepository.findAll()
+                .map(categoryToCategoryCommand::convert);
     }
 
     @Override
-    public CategoryCommand getCategoryCommandById(String id) {
-        return categoryToCategoryCommand.convert(
-                categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found")));
+    public Mono<CategoryCommand> getCategoryCommandById(String id) {
+        //todo add error handling
+        return categoryRepository.findById(id)
+                .map(categoryToCategoryCommand::convert);
     }
 }

@@ -15,8 +15,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -52,7 +56,7 @@ class RecipeControllerTest {
         Recipe mockRecipe = new Recipe();
         mockRecipe.setId(recipeId);
 
-        when(recipeService.getRecipeById(anyString())).thenReturn(mockRecipe);
+        when(recipeService.getRecipeById(anyString())).thenReturn(Mono.just(mockRecipe));
 
         mockMvc.perform(get("/recipe/2/show"))
                 .andExpect(status().isOk())
@@ -89,7 +93,7 @@ class RecipeControllerTest {
         RecipeCommand command = new RecipeCommand();
         command.setId("2");
 
-        when(recipeService.saveRecipeCommand(any())).thenReturn(command);
+        when(recipeService.saveRecipeCommand(any())).thenReturn(Mono.just(command));
 
         mockMvc.perform(post("/recipe")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -119,11 +123,11 @@ class RecipeControllerTest {
     void updateRecipe() throws Exception {
         RecipeCommand recipeCommand = new RecipeCommand();
         recipeCommand.setId("2L");
-        Set<CategoryCommand> mockCategoryCommands = new HashSet<>();
+        List<CategoryCommand> mockCategoryCommands = new ArrayList<>();
         mockCategoryCommands.add(new CategoryCommand());
 
-        when(categoryService.getAllCategory()).thenReturn(mockCategoryCommands);
-        when(recipeService.getRecipeCommandById(anyString())).thenReturn(recipeCommand);
+        when(categoryService.getAllCategory()).thenReturn(Flux.fromIterable(mockCategoryCommands));
+        when(recipeService.getRecipeCommandById(anyString())).thenReturn(Mono.just(recipeCommand));
 
         mockMvc.perform(get("/recipe/2/update"))
                 .andExpect(status().isOk())

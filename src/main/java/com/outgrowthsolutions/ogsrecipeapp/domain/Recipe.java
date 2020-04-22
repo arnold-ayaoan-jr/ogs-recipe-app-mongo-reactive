@@ -26,7 +26,6 @@ public class Recipe {
     private Byte[] image;
     private Note note;
     private Set<Ingredient> ingredients = new HashSet<>();
-    @DBRef
     private Set<Category> categories = new HashSet<>();
 
     public void setNotes(Note note) {

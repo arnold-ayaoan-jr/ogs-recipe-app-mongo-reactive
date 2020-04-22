@@ -9,12 +9,15 @@ import com.outgrowthsolutions.ogsrecipeapp.domain.Recipe;
 import com.outgrowthsolutions.ogsrecipeapp.domain.UnitOfMeasure;
 import com.outgrowthsolutions.ogsrecipeapp.repositories.RecipeRepository;
 import com.outgrowthsolutions.ogsrecipeapp.repositories.UnitOfMeasureRepository;
+import com.outgrowthsolutions.ogsrecipeapp.repositories.reactive.RecipeReactiveRepository;
+import com.outgrowthsolutions.ogsrecipeapp.repositories.reactive.UnitOfMeasureReactiveRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -28,13 +31,13 @@ import static org.mockito.Mockito.when;
 class IngredientServiceImplTest {
 
     @Mock
-    RecipeRepository recipeRepository;
+    RecipeReactiveRepository recipeRepository;
     @Mock
     IngredientCommandToIngredient ingredientCommandToIngredient;
     @Mock
     IngredientToIngredientCommand ingredientToIngredientCommand;
     @Mock
-    UnitOfMeasureRepository unitOfMeasureRepository;
+    UnitOfMeasureReactiveRepository unitOfMeasureRepository;
 
     @InjectMocks
     IngredientServiceImpl ingredientService;
@@ -66,11 +69,11 @@ class IngredientServiceImplTest {
         mockIngredientCommand.setId(onionIngredientId);
         mockIngredientCommand.setRecipeId(recipeId);
 
-        when(recipeRepository.findById(anyString())).thenReturn(Optional.of(mockRecipe));
+        when(recipeRepository.findById(anyString())).thenReturn(Mono.just(mockRecipe));
         when(ingredientToIngredientCommand.convert(any())).thenReturn(mockIngredientCommand );
 
         //when
-        IngredientCommand ingredientCommand = ingredientService.getIngredientCommandByIdAndRecipeId(onionIngredientId,recipeId);
+        IngredientCommand ingredientCommand = ingredientService.getIngredientCommandByIdAndRecipeId(onionIngredientId,recipeId).block();
 
         //then
         assertEquals(onionIngredientId,ingredientCommand.getId());
@@ -100,13 +103,13 @@ class IngredientServiceImplTest {
         ingredient.setUnitOfMeasure(unitOfMeasure);
         recipe.getIngredients().add(ingredient);
 
-        when(recipeRepository.findById(anyString())).thenReturn(Optional.of(recipe));
-        when(recipeRepository.save(any())).thenReturn(recipe);
-        when(unitOfMeasureRepository.findById(anyString())).thenReturn(Optional.of(unitOfMeasure));
+        when(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe));
+        when(recipeRepository.save(any())).thenReturn(Mono.just(recipe));
+        when(unitOfMeasureRepository.findById(anyString())).thenReturn(Mono.just(unitOfMeasure));
         when(ingredientToIngredientCommand.convert(any())).thenReturn(ingredientCommand);
 
         //when
-        IngredientCommand savedIngredientCommand = ingredientService.saveIngredientCommand(ingredientCommand);
+        IngredientCommand savedIngredientCommand = ingredientService.saveIngredientCommand(ingredientCommand).block();
 
         //then
         assertEquals(ingredientId,savedIngredientCommand.getId());
@@ -127,7 +130,8 @@ class IngredientServiceImplTest {
         String recipeId = "1L";
         recipe.setId(recipeId);
         recipe.addIngredient(ingredient);
-        when(recipeRepository.findById(anyString())).thenReturn(Optional.of(recipe));
+        when(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe));
+        when(recipeRepository.save(any())).thenReturn(Mono.just(recipe));
 
         //when
         ingredientService.deleteIngredient(recipeId, ingredientId);

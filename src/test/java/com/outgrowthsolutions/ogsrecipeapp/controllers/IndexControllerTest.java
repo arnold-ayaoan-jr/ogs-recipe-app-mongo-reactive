@@ -12,8 +12,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
+import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,6 +45,7 @@ class IndexControllerTest {
 
     @Test
     void testMockMvc() throws Exception {
+        when(recipeService.getRecipes()).thenReturn(Flux.empty());
         mockMvc.perform(get("/")).
                 andExpect(status().isOk()).
                 andExpect(view().name("index"));
@@ -50,27 +54,23 @@ class IndexControllerTest {
     @Test
     void viewIndex() throws Exception {
 //      given
-        Set<Recipe> mockRecipes = new HashSet<>();
+        List<Recipe> mockRecipes = new ArrayList<>();
         mockRecipes.add(new Recipe());
         Recipe recipe = new Recipe();
         recipe.setId("2L");
         mockRecipes.add(recipe);
-        when(recipeService.getRecipes()).thenReturn(mockRecipes);
+        when(recipeService.getRecipes()).thenReturn(Flux.fromIterable(mockRecipes));
 
-        ArgumentCaptor<Set<Recipe>> argumentCaptor = ArgumentCaptor.forClass(Set.class);
+        ArgumentCaptor<List<Recipe>> argumentCaptor = ArgumentCaptor.forClass(List.class);
 
 //      when
         String viewName = indexController.viewIndex(model);
-//        mockMvc.perform(get("/"))
-//                .andExpect(status().isOk())
-//                .andExpect(model().attributeExists("recipes"))
-//                .andExpect(view().name("index"));
 
 //      then
         assertEquals("index",viewName);
         verify(recipeService,times(1)).getRecipes();
         verify(model,times(1)).addAttribute(eq("recipes"),argumentCaptor.capture());
-        Set<Recipe> recipesFromController = argumentCaptor.getValue();
+        List<Recipe> recipesFromController = argumentCaptor.getValue();
         assertEquals(mockRecipes.size(),recipesFromController.size());
     }
 }

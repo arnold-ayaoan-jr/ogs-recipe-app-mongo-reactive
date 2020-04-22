@@ -27,7 +27,7 @@ public class RecipeController {
 
     @GetMapping("/{id}/show")
     public String showRecipeById(@PathVariable String id, Model model) {
-        model.addAttribute("recipe", recipeService.getRecipeById(id));
+        model.addAttribute("recipe", recipeService.getRecipeById(id).block());
         return "recipe/show";
     }
 
@@ -42,15 +42,15 @@ public class RecipeController {
         if (bindingResult.hasErrors())
             return RECIPE_FORM_URL;
 
-        RecipeCommand savedRecipeCommand = recipeService.saveRecipeCommand(recipeCommand);
+        RecipeCommand savedRecipeCommand = recipeService.saveRecipeCommand(recipeCommand).block();
         return "redirect:/recipe/" + savedRecipeCommand.getId() + "/show";
     }
 
     @GetMapping("/{id}/update")
     public String updateRecipe(@PathVariable String id, Model model){
-        RecipeCommand recipeCommand = recipeService.getRecipeCommandById(id);
+        RecipeCommand recipeCommand = recipeService.getRecipeCommandById(id).block();
         model.addAttribute("recipe", recipeCommand);
-        model.addAttribute("categoryList", categoryService.getAllCategory());
+        model.addAttribute("categoryList", categoryService.getAllCategory().collectList().block());
         return "recipe/form";
     }
 

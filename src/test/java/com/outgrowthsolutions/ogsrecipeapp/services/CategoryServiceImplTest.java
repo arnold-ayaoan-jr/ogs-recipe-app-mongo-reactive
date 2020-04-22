@@ -4,13 +4,17 @@ import com.outgrowthsolutions.ogsrecipeapp.commands.CategoryCommand;
 import com.outgrowthsolutions.ogsrecipeapp.converters.CategoryToCategoryCommand;
 import com.outgrowthsolutions.ogsrecipeapp.domain.Category;
 import com.outgrowthsolutions.ogsrecipeapp.repositories.CategoryRepository;
+import com.outgrowthsolutions.ogsrecipeapp.repositories.reactive.CategoryReactiveRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -23,7 +27,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
     @Mock
-    CategoryRepository categoryRepository;
+    CategoryReactiveRepository categoryRepository;
     @Mock
     CategoryToCategoryCommand categoryToCategoryCommand;
 
@@ -38,11 +42,11 @@ class CategoryServiceImplTest {
         CategoryCommand categoryCommand = new CategoryCommand();
         categoryCommand.setId("1L");
 
-        when(categoryRepository.findAll()).thenReturn(mockCategories);
+        when(categoryRepository.findAll()).thenReturn(Flux.fromIterable(mockCategories));
         when(categoryToCategoryCommand.convert(any(Category.class))).thenReturn(categoryCommand);
 
         //when
-        Set<CategoryCommand> categoryCommands = categoryService.getAllCategory();
+        List<CategoryCommand> categoryCommands = categoryService.getAllCategory().collectList().block();
 
         //then
         assertEquals(mockCategories.size(), categoryCommands.size());
@@ -61,11 +65,11 @@ class CategoryServiceImplTest {
         CategoryCommand categoryCommand = new CategoryCommand();
         categoryCommand.setId(id);
 
-        when(categoryRepository.findById(anyString())).thenReturn(Optional.of(category));
+        when(categoryRepository.findById(anyString())).thenReturn(Mono.just(category));
         when(categoryToCategoryCommand.convert(any())).thenReturn(categoryCommand);
 
         //when
-        CategoryCommand resultCommand = categoryService.getCategoryCommandById(id);
+        CategoryCommand resultCommand = categoryService.getCategoryCommandById(id).block();
 
         //
         assertEquals(id, resultCommand.getId());

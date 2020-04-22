@@ -1,7 +1,8 @@
 package com.outgrowthsolutions.ogsrecipeapp.services;
 
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 public interface ImageService {
-    void saveRecipeImage(String recipeId, MultipartFile file);
+    Mono<Void> saveRecipeImage(String recipeId, MultipartFile file);
 }

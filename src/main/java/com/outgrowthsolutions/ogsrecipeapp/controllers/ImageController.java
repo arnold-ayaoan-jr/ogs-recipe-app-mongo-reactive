@@ -29,7 +29,7 @@ public class ImageController {
 
     @GetMapping("/recipe/{recipeId}/image/upload")
     public String updateRecipeImage(@PathVariable String recipeId, Model model){
-        RecipeCommand foundRecipeCommand = recipeService.getRecipeCommandById(recipeId);
+        RecipeCommand foundRecipeCommand = recipeService.getRecipeCommandById(recipeId).block();
         if (foundRecipeCommand == null)
             throw new RuntimeException("Recipe not found");
         model.addAttribute("recipe",foundRecipeCommand);
@@ -37,12 +37,12 @@ public class ImageController {
     }
     @PostMapping("/recipe/{recipeId}/image")
     public String saveRecipeImage(@PathVariable String recipeId, @RequestParam MultipartFile image){
-        imageService.saveRecipeImage(recipeId,image);
+        imageService.saveRecipeImage(recipeId,image).block();
         return "redirect:/recipe/"+recipeId+"/show";
     }
     @GetMapping("/recipe/{recipeId}/image")
     public void showRecipeImage(@PathVariable String recipeId, HttpServletResponse httpServletResponse) throws IOException {
-        RecipeCommand foundRecipeCommand = recipeService.getRecipeCommandById(recipeId);
+        RecipeCommand foundRecipeCommand = recipeService.getRecipeCommandById(recipeId).block();
         if (foundRecipeCommand == null)
             throw new RuntimeException("Recipe not found");
         if(foundRecipeCommand.getImage() != null){

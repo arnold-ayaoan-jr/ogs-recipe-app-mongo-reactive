@@ -2,17 +2,17 @@ package com.outgrowthsolutions.ogsrecipeapp.services;
 
 import com.outgrowthsolutions.ogsrecipeapp.commands.RecipeCommand;
 import com.outgrowthsolutions.ogsrecipeapp.domain.Recipe;
-
-import java.util.Set;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface RecipeService {
-    Set<Recipe> getRecipes();
+    Flux<Recipe> getRecipes();
 
-    Recipe getRecipeById(String id);
+    Mono<Recipe> getRecipeById(String id);
 
-    RecipeCommand getRecipeCommandById(String id);
+    Mono<RecipeCommand> getRecipeCommandById(String id);
 
-    RecipeCommand saveRecipeCommand(RecipeCommand recipeCommand);
+    Mono<RecipeCommand> saveRecipeCommand(RecipeCommand recipeCommand);
 
-    void deleteById(String id);
+    Mono<Void> deleteById(String id);
 }

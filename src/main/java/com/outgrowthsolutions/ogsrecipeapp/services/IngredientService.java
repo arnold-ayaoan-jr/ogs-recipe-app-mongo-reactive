@@ -1,11 +1,12 @@
 package com.outgrowthsolutions.ogsrecipeapp.services;
 
 import com.outgrowthsolutions.ogsrecipeapp.commands.IngredientCommand;
+import reactor.core.publisher.Mono;
 
 public interface IngredientService {
-    IngredientCommand getIngredientCommandByIdAndRecipeId(String ingredientId, String recipeId);
+    Mono<IngredientCommand> getIngredientCommandByIdAndRecipeId(String ingredientId, String recipeId);
 
-    IngredientCommand saveIngredientCommand(IngredientCommand ingredientCommand);
+    Mono<IngredientCommand> saveIngredientCommand(IngredientCommand ingredientCommand);
 
-    void deleteIngredient(String recipeId, String ingredientId);
+    Mono<Void> deleteIngredient(String recipeId, String ingredientId);
 }

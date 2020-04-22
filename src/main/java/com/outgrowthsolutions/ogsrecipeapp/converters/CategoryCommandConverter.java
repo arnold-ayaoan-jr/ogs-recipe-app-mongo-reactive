@@ -15,6 +15,6 @@ public class CategoryCommandConverter implements Converter<String, CategoryComma
 
     @Override
     public CategoryCommand convert(String id) {
-        return categoryService.getCategoryCommandById(id);
+        return categoryService.getCategoryCommandById(id).block();
     }
 }
