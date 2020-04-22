@@ -56,4 +56,4 @@ jobs:
 
       - run:
           name: Send to CodeCov
-          command: bash <(curl -s https://codecov.io/bash)
+          command: bash <(curl -s https://codecov.io/bash) -t 9a76cd2b-3c72-4e72-854f-20cefc855c56
