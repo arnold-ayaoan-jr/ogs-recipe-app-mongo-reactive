@@ -9,7 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.exceptions.TemplateInputException;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 
@@ -27,7 +28,7 @@ public class RecipeController {
 
     @GetMapping("/{id}/show")
     public String showRecipeById(@PathVariable String id, Model model) {
-        model.addAttribute("recipe", recipeService.getRecipeById(id).block());
+        model.addAttribute("recipe", recipeService.getRecipeById(id));
         return "recipe/show";
     }
 
@@ -42,15 +43,15 @@ public class RecipeController {
         if (bindingResult.hasErrors())
             return RECIPE_FORM_URL;
 
-        RecipeCommand savedRecipeCommand = recipeService.saveRecipeCommand(recipeCommand).block();
-        return "redirect:/recipe/" + savedRecipeCommand.getId() + "/show";
+        Mono<RecipeCommand> savedRecipeCommand = recipeService.saveRecipeCommand(recipeCommand);
+        return "redirect:/recipe/" + recipeCommand.getId() + "/show";
+//        return "redirect:/recipe/" + savedRecipeCommand.getId() + "/show";
     }
 
     @GetMapping("/{id}/update")
-    public String updateRecipe(@PathVariable String id, Model model){
-        RecipeCommand recipeCommand = recipeService.getRecipeCommandById(id).block();
-        model.addAttribute("recipe", recipeCommand);
-        model.addAttribute("categoryList", categoryService.getAllCategory().collectList().block());
+    public String updateRecipe(@PathVariable String id, Model model) {
+        model.addAttribute("recipe", recipeService.getRecipeCommandById(id));
+        model.addAttribute("categoryList", categoryService.getAllCategory().collectList());
         return "recipe/form";
     }
 
@@ -61,12 +62,10 @@ public class RecipeController {
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    public ModelAndView handleNotFoundException(Exception exception) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("error/404");
-        modelAndView.addObject("exception", exception);
-        return modelAndView;
+    @ExceptionHandler({NotFoundException.class, TemplateInputException.class})
+    public String handleNotFoundException(Exception exception, Model model) {
+        model.addAttribute("exception", exception);
+        return "error/404";
     }
 
 

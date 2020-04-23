@@ -20,7 +20,7 @@ public class IndexController {
     @RequestMapping({"","index"})
     public String viewIndex(Model model){
         log.debug("IndexController::viewIndex");
-       model.addAttribute("recipes",recipeService.getRecipes().collectList().block());
+        model.addAttribute("recipes", recipeService.getRecipes().collectList());
         return "index";
     }
 }

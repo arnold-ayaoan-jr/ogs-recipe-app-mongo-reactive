@@ -57,7 +57,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     public Mono<Void> deleteById(String id) {
 
-        recipeRepository.deleteById(id).block();
+        recipeRepository.deleteById(id);
         return Mono.empty();
     }
 }

@@ -3,6 +3,7 @@ package com.outgrowthsolutions.ogsrecipeapp.controllers;
 import com.outgrowthsolutions.ogsrecipeapp.domain.Recipe;
 import com.outgrowthsolutions.ogsrecipeapp.services.RecipeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -15,9 +16,7 @@ import org.springframework.ui.Model;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -26,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class IndexControllerTest {
     @Mock

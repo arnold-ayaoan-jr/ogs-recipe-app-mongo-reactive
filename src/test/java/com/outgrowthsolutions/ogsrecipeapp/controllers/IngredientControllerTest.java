@@ -7,6 +7,7 @@ import com.outgrowthsolutions.ogsrecipeapp.services.IngredientService;
 import com.outgrowthsolutions.ogsrecipeapp.services.RecipeService;
 import com.outgrowthsolutions.ogsrecipeapp.services.UnitOfMeasureService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class IngredientControllerTest {
     @Mock
@@ -143,7 +145,7 @@ class IngredientControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id","")
                 .param("description","Kilogram")
-                ).andExpect(status().is3xxRedirection())
+        ).andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/recipe/1/ingredient/2/show"));
         verify(ingredientService).saveIngredientCommand(any(IngredientCommand.class));
     }
